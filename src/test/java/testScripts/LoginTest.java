@@ -13,6 +13,10 @@ import org.apache.poi.xssf.usermodel.XSSFAnchor;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -101,23 +105,42 @@ public class LoginTest {
   }
   
   
-  @DataProvider(name="loginData")
-  public Object[][] getData() throws CsvValidationException, IOException{
-	  String path = System.getProperty("user.dir") +
-			  "//src//test//resources//dataFiles/loginData.csv";
-	  CSVReader reader = new CSVReader(new FileReader(path));
-	  String cols[];
-	  ArrayList<Object> dataList = new ArrayList<Object>();
-	  while((cols =reader.readNext()) != null) {
-	 Object record[] = {cols[0], cols[1]};
-		  dataList.add(record);
-		}
-	  reader.close();
-	  return dataList.toArray(new Object[dataList.size()][]);
-  }
+//  @DataProvider(name="loginData")
+//  public Object[][] getData() throws CsvValidationException, IOException{
+//	  String path = System.getProperty("user.dir") +
+//			  "//src//test//resources//dataFiles/loginData.csv";
+//	  CSVReader reader = new CSVReader(new FileReader(path));
+//	  String cols[];
+//	  ArrayList<Object> dataList = new ArrayList<Object>();
+//	  while((cols =reader.readNext()) != null) {
+//	 Object record[] = {cols[0], cols[1]};
+//		  dataList.add(record);
+//		}
+//	  reader.close();
+//	  return dataList.toArray(new Object[dataList.size()][]);
+//  }
   //user1 - uname,pwd
   //user2 - uname,pwd
   //user3 - uname,pwd
+  @DataProvider(name="loginData")
+  public String[][] getData() throws IOException, ParseException {  
+	  String path = System.getProperty("user.dir") +
+			  "//src//test//resources//testData//loginData.json";
+	  FileReader reader = new FileReader(path);
+	  JSONParser parser = new JSONParser();
+	  Object obj = parser.parse(reader);
+	  JSONObject jsonObj = (JSONObject) obj;
+	  JSONArray userArray = (JSONArray)jsonObj.get("userLogins");
+	  String arr[][] = new String[userArray.size()][];
+	  for(int i = 0; i < userArray.size(); i++) {
+		 JSONObject user=  (JSONObject)userArray.get(i);
+		 String strUser = (String)user.get("username");
+		 String strPwd = (String)user.get("password");
+		 String record[] = {strUser, strPwd};
+		 arr[i] = record;
+	  }
+	  return arr;
+  }
   
   @AfterMethod
   public void teardown() {

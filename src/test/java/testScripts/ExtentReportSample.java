@@ -19,7 +19,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
-public class SampleOneTest {
+public class ExtentReportSample {
 	WebDriver driver;
 
 	ExtentReports extentReports;
